@@ -19,6 +19,10 @@ func (impl Time) GoTime() time.Time {
 	return time.Time(impl)
 }
 
+func (impl *Time) IsToday() bool {
+	return time.Since(impl.GoTime()) < 24*time.Hour
+}
+
 func (impl *Time) UnmarshalJSON(b []byte) error {
 	t := time.Time{}
 	err := json.Unmarshal(b, &t)
