@@ -1,0 +1,3 @@
+# ghr
+
+github release checker
