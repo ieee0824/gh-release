@@ -9,6 +9,26 @@ import (
 	"time"
 )
 
+type Time time.Time
+
+func (impl Time) String() string {
+	return time.Time(impl).String()
+}
+
+func (impl Time) GoTime() time.Time {
+	return time.Time(impl)
+}
+
+func (impl *Time) UnmarshalJSON(b []byte) error {
+	t := time.Time{}
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+	*impl = Time(t)
+	return nil
+}
+
 type Author struct {
 	Login             string `json:"login"`
 	ID                int    `json:"id"`
@@ -52,19 +72,19 @@ type Uploader struct {
 }
 
 type Asset struct {
-	URL                string    `json:"url"`
-	ID                 int       `json:"id"`
-	NodeID             string    `json:"node_id"`
-	Name               string    `json:"name"`
-	Label              string    `json:"label"`
-	Uploader           Uploader  `json:"uploader"`
-	ContentType        string    `json:"content_type"`
-	State              string    `json:"state"`
-	Size               int       `json:"size"`
-	DownloadCount      int       `json:"download_count"`
-	CreatedAt          time.Time `json:"created_at"`
-	UpdatedAt          time.Time `json:"updated_at"`
-	BrowserDownloadURL string    `json:"browser_download_url"`
+	URL                string   `json:"url"`
+	ID                 int      `json:"id"`
+	NodeID             string   `json:"node_id"`
+	Name               string   `json:"name"`
+	Label              string   `json:"label"`
+	Uploader           Uploader `json:"uploader"`
+	ContentType        string   `json:"content_type"`
+	State              string   `json:"state"`
+	Size               int      `json:"size"`
+	DownloadCount      int      `json:"download_count"`
+	CreatedAt          Time     `json:"created_at"`
+	UpdatedAt          Time     `json:"updated_at"`
+	BrowserDownloadURL string   `json:"browser_download_url"`
 }
 
 type Reaction struct {
@@ -81,26 +101,26 @@ type Reaction struct {
 }
 
 type Release struct {
-	URL             string    `json:"url"`
-	AssetsURL       string    `json:"assets_url"`
-	UploadURL       string    `json:"upload_url"`
-	HTMLURL         string    `json:"html_url"`
-	ID              int       `json:"id"`
-	Author          Author    `json:"author"`
-	NodeID          string    `json:"node_id"`
-	TagName         string    `json:"tag_name"`
-	TargetCommitish string    `json:"target_commitish"`
-	Name            string    `json:"name"`
-	Draft           bool      `json:"draft"`
-	Prerelease      bool      `json:"prerelease"`
-	CreatedAt       time.Time `json:"created_at"`
-	PublishedAt     time.Time `json:"published_at"`
-	Assets          []Asset   `json:"assets"`
-	TarballURL      string    `json:"tarball_url"`
-	ZipballURL      string    `json:"zipball_url"`
-	Body            string    `json:"body"`
-	MentionsCount   int       `json:"mentions_count,omitempty"`
-	Reactions       Reaction  `json:"reactions,omitempty"`
+	URL             string   `json:"url"`
+	AssetsURL       string   `json:"assets_url"`
+	UploadURL       string   `json:"upload_url"`
+	HTMLURL         string   `json:"html_url"`
+	ID              int      `json:"id"`
+	Author          Author   `json:"author"`
+	NodeID          string   `json:"node_id"`
+	TagName         string   `json:"tag_name"`
+	TargetCommitish string   `json:"target_commitish"`
+	Name            string   `json:"name"`
+	Draft           bool     `json:"draft"`
+	Prerelease      bool     `json:"prerelease"`
+	CreatedAt       Time     `json:"created_at"`
+	PublishedAt     Time     `json:"published_at"`
+	Assets          []Asset  `json:"assets"`
+	TarballURL      string   `json:"tarball_url"`
+	ZipballURL      string   `json:"zipball_url"`
+	Body            string   `json:"body"`
+	MentionsCount   int      `json:"mentions_count,omitempty"`
+	Reactions       Reaction `json:"reactions,omitempty"`
 }
 
 type Releases []Release
