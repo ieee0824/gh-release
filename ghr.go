@@ -168,3 +168,41 @@ func (impl *GHR) GetReleases() (Releases, error) {
 
 	return ret, nil
 }
+
+type Tag struct {
+	Name       string `json:"name"`
+	ZipballURL string `json:"zipball_url"`
+	TarballURL string `json:"tarball_url"`
+	Commit     Commit `json:"commit"`
+	NodeID     string `json:"node_id"`
+}
+
+type Commit struct {
+	Sha string `json:"sha"`
+	URL string `json:"url"`
+}
+
+type Tags []Tag
+
+func (impl *GHR) GetTags() (Tags, error) {
+	const endPoint = "https://api.github.com/repos/%s/tags"
+
+	resp, err := impl.client.Get(fmt.Sprintf(endPoint, impl.Repo))
+	if err != nil {
+		return nil, fmt.Errorf("request error: %w", err)
+	}
+	defer resp.Body.Close()
+
+	switch resp.StatusCode {
+	case http.StatusOK:
+	default:
+		return nil, fmt.Errorf("bad status: %d, %s", resp.StatusCode, resp.Status)
+	}
+
+	ret := Tags{}
+	if err := json.NewDecoder(resp.Body).Decode(&ret); err != nil {
+		return nil, fmt.Errorf("json parse err: %w", err)
+	}
+
+	return ret, nil
+}
